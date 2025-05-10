@@ -10,10 +10,20 @@ interface Props {
   preview?: boolean;
 }
 
+/**
+ * BugCard — Displays details for a bug, with optional compact preview mode.
+ *
+ * Props:
+ *   - bug: Bug object to display.
+ *   - preview: If true, renders a compact hover preview.
+ */
 export const BugCard: React.FC<Props> = ({ bug, preview = false }) => {
   const squashBug = useBugStore((s) => s.squashBug);
   const bugImage = getBugImage(bug.id);
 
+  /**
+   * Overlay for squashed bugs, with animation.
+   */
   return (
     <motion.div
       whileHover={{
@@ -74,3 +84,7 @@ export const BugCard: React.FC<Props> = ({ bug, preview = false }) => {
     </motion.div>
   );
 };
+
+/**
+ * Main bug card content: image, title, bounty, and description.
+ */

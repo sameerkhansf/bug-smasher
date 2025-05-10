@@ -7,9 +7,14 @@ import ReactDOM from "react-dom";
 import clsx from "clsx";
 import { useBugStore } from "../store";
 
-/** -----------------------------------------------------------------------
- *  BugCrawler — makes a bug sprite wander with a lightweight 3-D effect
- *  ---------------------------------------------------------------------- */
+/**
+ * BugCrawler — Animates a bug sprite, handles wandering, 3D effect, and interaction.
+ *
+ * Props:
+ *   - x, y: Initial position of the bug.
+ *   - bug: Bug object to render and animate.
+ *   - containerWidth, containerHeight: Bounds for movement.
+ */
 interface BugCrawlerProps {
   x: number;
   y: number;
@@ -27,10 +32,10 @@ const BugCrawler: React.FC<BugCrawlerProps> = ({
 }) => {
   /* ---------------- UI state ---------------- */
   const [showPreview, setShowPreview] = useState(false);
-  const [hoverPos,    setHoverPos]    = useState({ x: 0, y: 0 });
-  
-  const inspectBug = useBugStore(s => s.inspectBug);
-  const inspectedId = useBugStore(s => s.inspectedId);
+  const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 });
+
+  const inspectBug = useBugStore((s) => s.inspectBug);
+  const inspectedId = useBugStore((s) => s.inspectedId);
   const showModal = inspectedId === bug.id;
 
   const isAlive = bug.active;
@@ -48,7 +53,7 @@ const BugCrawler: React.FC<BugCrawlerProps> = ({
 
   /* -------------- timing refs -------------- */
   const lastTurn = useRef<number>(Date.now());
-  const rafRef   = useRef<number>();
+  const rafRef = useRef<number>();
 
   /* keep refs fresh */
   useEffect(() => {
@@ -60,24 +65,24 @@ const BugCrawler: React.FC<BugCrawlerProps> = ({
     const step = () => {
       if (!isAlive) return;
 
-      const now           = Date.now();
-      const elapsed       = now - lastTurn.current;
+      const now = Date.now();
+      const elapsed = now - lastTurn.current;
       const changeHeading = elapsed > 2000 + Math.random() * 2000;
 
       if (changeHeading) {
         const angle = Math.random() * Math.PI * 2;
-        const dir   = { x: Math.cos(angle), y: Math.sin(angle) };
+        const dir = { x: Math.cos(angle), y: Math.sin(angle) };
         directionRef.current = dir;
         setDirection(dir);
-        lastTurn.current     = now;
+        lastTurn.current = now;
       }
 
-      const speed    = 0.6; // px / frame  ≈37 px/s @60fps
-      const bugSize  = 40;
-      let newX       = positionRef.current.x + directionRef.current.x * speed;
-      let newY       = positionRef.current.y + directionRef.current.y * speed;
-      const maxX     = (containerWidth  || window.innerWidth)  - bugSize;
-      const maxY     = (containerHeight || window.innerHeight) - bugSize;
+      const speed = 0.6; // px / frame  ≈37 px/s @60fps
+      const bugSize = 40;
+      let newX = positionRef.current.x + directionRef.current.x * speed;
+      let newY = positionRef.current.y + directionRef.current.y * speed;
+      const maxX = (containerWidth || window.innerWidth) - bugSize;
+      const maxY = (containerHeight || window.innerHeight) - bugSize;
 
       if (newX <= 0 || newX >= maxX) {
         directionRef.current.x *= -1;
@@ -101,11 +106,14 @@ const BugCrawler: React.FC<BugCrawlerProps> = ({
   }, [isAlive, containerWidth, containerHeight]);
 
   /* -------------- transforms -------------- */
-  const heading2D = Math.atan2(direction.y, direction.x) * 180 / Math.PI - 90;
-  const tiltY     = direction.x * 25;
-  const tiltX     = 18;
-  const bugImage  = getBugImage(bug.id);
+  const heading2D = (Math.atan2(direction.y, direction.x) * 180) / Math.PI - 90;
+  const tiltY = direction.x * 25;
+  const tiltX = 18;
+  const bugImage = getBugImage(bug.id);
 
+  /**
+   * Handles bug preview on hover and modal on click.
+   */
   /* ---------------- render ---------------- */
   return (
     <>
@@ -126,7 +134,7 @@ const BugCrawler: React.FC<BugCrawlerProps> = ({
           data-bug-id={bug.id}
           src={bugImage}
           alt={bug.title}
-          onMouseEnter={e => {
+          onMouseEnter={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
             setHoverPos({ x: rect.left, y: rect.top });
             setShowPreview(true);
@@ -137,7 +145,7 @@ const BugCrawler: React.FC<BugCrawlerProps> = ({
             !bug.active && "grayscale opacity-50"
           )}
           animate={{
-            rotate:  heading2D + 180,
+            rotate: heading2D + 180,
             rotateY: tiltY,
             rotateX: tiltX,
             transition: { duration: 0.016, ease: "linear" },
@@ -149,7 +157,8 @@ const BugCrawler: React.FC<BugCrawlerProps> = ({
         />
 
         {/* hover card preview */}
-        {showPreview && isAlive &&
+        {showPreview &&
+          isAlive &&
           ReactDOM.createPortal(
             <div
               className="fixed z-50 pointer-events-none"

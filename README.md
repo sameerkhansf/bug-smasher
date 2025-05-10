@@ -1,54 +1,58 @@
-# React + TypeScript + Vite
+# Bug Basher
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A retro-inspired bug-squashing game and dashboard, built with React, TypeScript, and Vite. Inspired by Windows 95 aesthetics, Bug Basher lets you squash animated bugs, track your bounty, and compete on the leaderboard!
 
-Currently, two official plugins are available:
+![Bug Basher Screenshot](public/screenshot.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Interactive Bug Squashing**: Click or use keyboard/gamepad to squash animated bugs.
+- **Leaderboard**: Compete for the highest bounty by squashing the most bugs.
+- **Dashboard**: Visualize bug stats, trends, and your progress.
+- **File New Bugs**: Add new bugs with custom bounties and priorities.
+- **Retro UI**: Windows 95-inspired design for a nostalgic experience.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Getting Started
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+2. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+3. **Open in your browser:**
+   Visit [http://localhost:5173](http://localhost:5173)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Project Structure
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+- `src/components/` — UI components (BugArea, BugCrawler, BugCard, etc.)
+- `src/routes/` — Main app routes (Bugs, Dashboard, Leaderboard, etc.)
+- `src/store.ts` — State management using Zustand
+- `src/assets/` — Bug images and icons
+- `public/` — Static assets (including screenshot)
+
+## Main Components
+
+- **BugArea**: Handles bug layout, aim/cursor, and input (mouse, keyboard, gamepad).
+- **BugCrawler**: Animates individual bugs and handles interactions.
+- **BugCard**: Displays bug details and allows squashing.
+- **Dashboard**: Shows bug stats, trends, and activity.
+- **Leaderboard**: Ranks users by bounty and efficiency.
+
+## Controls
+
+- **Mouse**: Move cursor and click to squash bugs.
+- **Keyboard**: WASD to move aim, Space to squash.
+- **Gamepad**: Left stick to aim, A/trigger to squash.
+
+## Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+---
+
+© 2024 Bug Basher. All rights reserved.

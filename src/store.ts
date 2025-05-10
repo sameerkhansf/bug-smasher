@@ -3,6 +3,20 @@ import { bugs as mockBugs } from "./mock/bugs";
 import { users as mockUsers } from "./mock/users";
 import { Bug } from "./types/bug";
 
+/**
+ * Zustand store for Bug Basher app state.
+ *
+ * State:
+ *   - bugs: Array of Bug objects (active and squashed)
+ *   - users: Array of user objects (with bounty, score, etc.)
+ *   - activeUserId: ID of the current user
+ *   - inspectedId: ID of the bug currently inspected (for modal)
+ *
+ * Actions:
+ *   - inspectBug(id): Set the inspected bug for modal display
+ *   - squashBug(id): Mark a bug as squashed and award bounty to user
+ */
+
 interface State {
 	bugs: Bug[];
 	users: any[]; // Using any for now since we don't have the exact User type

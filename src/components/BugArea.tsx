@@ -4,12 +4,20 @@ import BugCrawler from "./BugCrawler";
 import AimCursor from "./AimCursor";
 import { useBugStore } from "../store";
 
+/**
+ * BugArea — Main interactive area for displaying and squashing bugs.
+ * Handles layout, aim/cursor, and input (mouse, keyboard, gamepad).
+ *
+ * Props:
+ *   - bugs: Array of Bug objects to display and interact with.
+ */
+
 /** Evenly spreads bugs, then shuffles and jitters them for an organic layout. */
 interface BugAreaProps {
   bugs: Bug[];
 }
 
-const SPEED = 320;      // px per second the aim moves when an input is held/tilted
+const SPEED = 320; // px per second the aim moves when an input is held/tilted
 const DEAD_ZONE = 0.15; // ignore tiny stick deflections
 
 const BugArea: React.FC<BugAreaProps> = ({ bugs }) => {
@@ -17,6 +25,9 @@ const BugArea: React.FC<BugAreaProps> = ({ bugs }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
 
+  /**
+   * Tracks the size of the container for bug layout and aim clamping.
+   */
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -41,6 +52,9 @@ const BugArea: React.FC<BugAreaProps> = ({ bugs }) => {
   const [aim, setAim] = useState({ x: 0, y: 0 });
   const aimRef = useRef(aim);
 
+  /**
+   * Tracks the aim/cursor position. Supports centering and clamping.
+   */
   useEffect(() => {
     if (size.width && size.height) {
       // center when area first ready
@@ -56,14 +70,16 @@ const BugArea: React.FC<BugAreaProps> = ({ bugs }) => {
 
   /* ---------- modal helpers ---------- */
   const inspectBug = useBugStore((s) => s.inspectBug);
-  const squashBug  = useBugStore((s) => s.squashBug);
+  const squashBug = useBugStore((s) => s.squashBug);
   const inspectedId = useBugStore((s) => s.inspectedId);
   const inspectedIdRef = useRef(inspectedId);
   useEffect(() => {
     inspectedIdRef.current = inspectedId;
   }, [inspectedId]);
 
-  /* ---------- shooting helper ---------- */
+  /**
+   * Handles bug inspection and squashing via modal or direct click.
+   */
   const shoot = () => {
     // If a modal is open, squash that bug and close the modal.
     if (inspectedIdRef.current) {
@@ -93,7 +109,9 @@ const BugArea: React.FC<BugAreaProps> = ({ bugs }) => {
     }
   };
 
-  /* ---------- keyboard press state ---------- */
+  /**
+   * Keyboard press state and listeners for WASD movement and space to shoot.
+   */
   const pressedRef = useRef({
     up: false,
     down: false,
@@ -161,7 +179,9 @@ const BugArea: React.FC<BugAreaProps> = ({ bugs }) => {
     };
   }, []);
 
-  /* ---------- mouse movement & click ---------- */
+  /**
+   * Mouse movement and click listeners for aim and squashing.
+   */
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -192,6 +212,9 @@ const BugArea: React.FC<BugAreaProps> = ({ bugs }) => {
   const gamepadIndexRef = useRef<number | null>(null);
   const prevFireRef = useRef(false);
 
+  /**
+   * Gamepad support for aim and squashing.
+   */
   // Attach listeners to detect connect/disconnect
   useEffect(() => {
     // If a gamepad is already connected before page load, store it
@@ -207,7 +230,10 @@ const BugArea: React.FC<BugAreaProps> = ({ bugs }) => {
     scanExisting();
 
     const connectHandler = (e: GamepadEvent) => {
-      if (e.gamepad.mapping === "standard" && gamepadIndexRef.current === null) {
+      if (
+        e.gamepad.mapping === "standard" &&
+        gamepadIndexRef.current === null
+      ) {
         gamepadIndexRef.current = e.gamepad.index;
         // eslint-disable-next-line no-console
         console.log("Gamepad connected:", e.gamepad.id);
@@ -244,7 +270,7 @@ const BugArea: React.FC<BugAreaProps> = ({ bugs }) => {
       let dy = 0;
       const { up, down, left, right } = pressedRef.current;
       dx += (right ? 1 : 0) - (left ? 1 : 0); // +1 right, -1 left
-      dy += (down ? 1 : 0) - (up ? 1 : 0);   // +1 down,  -1 up
+      dy += (down ? 1 : 0) - (up ? 1 : 0); // +1 down,  -1 up
 
       /* ----- incorporate gamepad axes ----- */
       const gpIndex = gamepadIndexRef.current;
@@ -263,7 +289,8 @@ const BugArea: React.FC<BugAreaProps> = ({ bugs }) => {
 
           /* ----- handle fire buttons (✕ / R2) ----- */
           const fire =
-            (gp.buttons[0]?.pressed ?? false) || (gp.buttons[7]?.pressed ?? false);
+            (gp.buttons[0]?.pressed ?? false) ||
+            (gp.buttons[7]?.pressed ?? false);
 
           if (fire && !prevFireRef.current) {
             shoot();
