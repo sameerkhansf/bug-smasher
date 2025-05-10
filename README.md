@@ -55,4 +55,4 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 
 ---
 
-© 2024 Bug Basher. All rights reserved.
+© 2025 Bug Basher. All rights reserved.
